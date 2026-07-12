@@ -144,10 +144,10 @@ export default function CtaSection() {
                 <div>
                   <div className="font-semibold mb-1">Appelez-nous</div>
                   <a
-                    href="tel:+33123456789"
+                    href="tel:+212708768944"
                     className="text-primary hover:text-primary/80"
                   >
-                    +33 1 23 45 67 89
+                    +212 708-768944
                   </a>
                 </div>
               </div>

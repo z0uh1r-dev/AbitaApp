@@ -136,7 +136,7 @@ export default function QuoteForm({
                     name="phone"
                     required
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-primary"
-                    placeholder="+33 1 23 45 67 89"
+                    placeholder="+212 708-768944"
                   />
                 </div>
               </div>

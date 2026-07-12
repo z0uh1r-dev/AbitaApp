@@ -81,7 +81,7 @@ export default function Sidebar() {
         </p>
         <div className="space-y-2 text-sm">
           <p>📧 contact@abita-office.com</p>
-          <p>📞 +33 1 23 45 67 89</p>
+          <p>📞 +212 708-768944</p>
         </div>
       </div>
     </div>

@@ -143,10 +143,10 @@ export default function InformationsAndForm({
                 <div>
                   <h3 className="font-semibold text-lg mb-1">Téléphone</h3>
                   <a
-                    href="tel:+33123456789"
+                    href="tel:+212708768944"
                     className="text-gray-600 hover:text-primary transition-colors"
                   >
-                    +33 1 23 45 67 89
+                    +212 708-768944
                   </a>
                 </div>
               </div>
@@ -165,11 +165,11 @@ export default function InformationsAndForm({
                 <div>
                   <h3 className="font-semibold text-lg mb-1">WhatsApp</h3>
                   <a
-                    href="https://wa.me/33123456789"
+                    href="https://wa.me/212708768944"
                     target="_blank"
                     className="text-gray-600 hover:text-primary transition-colors"
                   >
-                    +33 1 23 45 67 89
+                    +212 708-768944
                   </a>
                 </div>
               </div>
@@ -290,7 +290,7 @@ export default function InformationsAndForm({
                   name="phone"
                   required
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-primary transition-colors"
-                  placeholder="+33 1 23 45 67 89"
+                  placeholder="+212 708-768944"
                 />
               </div>
 
