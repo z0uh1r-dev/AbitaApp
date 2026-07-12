@@ -1,59 +1,131 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# AbitaDash
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+AbitaDash is a Laravel 12 web application that powers a company's public catalog site and an internal admin dashboard for managing categories, products, quote requests, and contact messages.
 
-## About Laravel
+## Overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The app serves two audiences:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Public API (`/api/v1/*`)** – a JSON API consumed by a public-facing frontend to browse categories/products and submit quote or contact requests.
+- **Admin Dashboard (`/admin/*`)** – an authenticated back-office where staff manage the catalog and respond to customer quote/contact submissions.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Key Features
 
-## Learning Laravel
+- **Category & Product Catalog**
+  - Categories with images, slugs, and descriptions.
+  - Products with specifications, customizations, and image galleries.
+  - Public endpoints to list categories, list products by category, and fetch product details with related products.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- **Quote Requests**
+  - Public endpoint (`POST /api/v1/quotes`) for customers to request a quote (company, contact, email, phone, description).
+  - Automatic email notifications on submission:
+    - Admin notification email to all admin users.
+    - Confirmation email sent back to the customer.
+  - Mail sending is **best-effort**: a quote is always saved even if email delivery fails; failures are logged, not surfaced to the client.
+  - Admin dashboard view to list, filter, update status (`New`, `In Progress`, `Completed`), and delete quotes.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Contact Messages**
+  - Public endpoint (`POST /api/v1/contact-messages`) for general contact form submissions.
+  - Admin dashboard view to list, view, and delete messages.
 
-## Laravel Sponsors
+- **Admin Authentication & Authorization**
+  - Session-based login for admin users.
+  - `EnsureUserIsAdmin` middleware and `AdminPolicy` gate all `/admin/*` routes to users with `is_admin = true`.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **API Documentation**
+  - OpenAPI/Swagger docs available via `l5-swagger`, describing the public catalog and quote/contact endpoints.
 
-### Premium Partners
+## Tech Stack
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- **Backend:** PHP 8.4, Laravel 12
+- **Testing:** Pest 4 / PHPUnit 12
+- **Code style:** Laravel Pint
+- **Frontend build:** Vite, Tailwind CSS 4
+- **Database:** MySQL (via Eloquent ORM), with `database`-backed cache, session, and queue drivers
+- **Mail:** Laravel Mailables (SMTP, e.g. Gmail) with HTML branded templates
 
-## Contributing
+## Project Structure (high level)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
+app/
+  Http/Controllers/
+    Api/        # Public JSON API controllers (Category, Product, Quote, ContactMessage)
+    Admin/       # Admin dashboard controllers (Dashboard, Category, Product, Quote, ContactMessage)
+    Auth/        # Admin login
+  Mail/          # Quote notification mailables (NewQuoteForAdmin, QuoteReceivedConfirmation)
+  Models/        # Eloquent models (Category, Product, Quote, ContactMessage, User, ...)
+  Policies/      # AdminPolicy (gates admin routes)
+  Http/Middleware/EnsureUserIsAdmin.php
 
-## Code of Conduct
+routes/
+  api.php        # Public API routes (/api/v1/...)
+  admin.php      # Admin dashboard routes (/admin/...), auth + admin middleware
+  web.php        # Web routes, includes admin.php
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+resources/views/
+  admin/         # Blade views for the admin dashboard
+  auth/          # Login view
+  mail/quotes/   # Branded HTML email templates for quote notifications
 
-## Security Vulnerabilities
+database/migrations/  # Schema for categories, products, quotes, contact messages, users, cache, sessions
+tests/Feature/         # Feature tests (Pest) for API endpoints, including quote email notifications
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Core Data Model
+
+- **Category** → has many **Products**
+- **Product** → belongs to Category, has many **ProductSpecifications**, **ProductCustomizations**, **ProductImages**
+- **Quote** → standalone lead record with `status` (`New`, `In Progress`, `Completed`)
+- **ContactMessage** → standalone contact form submission
+- **User** → `is_admin` flag controls access to the admin dashboard
+
+## Getting Started
+
+### Requirements
+
+- PHP 8.4+
+- Composer
+- Node.js + npm
+- MySQL
+
+### Setup
+
+```bash
+composer install
+npm install
+
+cp .env.example .env
+php artisan key:generate
+
+# Configure DB_* and MAIL_* values in .env
+
+php artisan migrate
+npm run build   # or `npm run dev` during development
+```
+
+### Running Tests
+
+```bash
+php artisan test --compact
+```
+
+### Code Style
+
+```bash
+vendor/bin/pint --dirty --format agent
+```
+
+## Email Notifications
+
+When a quote is submitted via the API, two emails are sent:
+
+1. **`NewQuoteForAdmin`** → sent to every user with `is_admin = true`.
+2. **`QuoteReceivedConfirmation`** → sent to the customer's submitted email.
+
+Both use branded HTML templates (`resources/views/mail/quotes/*.blade.php`) with the company logo, and both sends are wrapped so that a mail failure never blocks quote creation or surfaces an error to the end user.
+
+Configure your mailer in `.env` (see `MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_ENCRYPTION`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME`).
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Built on the [Laravel](https://laravel.com) framework, licensed under the [MIT license](https://opensource.org/licenses/MIT).
