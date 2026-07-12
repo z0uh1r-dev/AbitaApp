@@ -6,6 +6,7 @@ import Header from "@/components/header";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { WebVitalsReporter } from "@/components/WebVitalsReporter";
 import { PerformanceMonitor } from "@/components/PerformanceMonitor";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 // Dynamic import Footer with loading fallback
 const Footer = dynamic(() => import("@/components/footer"), {
@@ -39,6 +40,7 @@ export default function RootLayout({
           <Header />
           {children}
           <Footer />
+          <WhatsAppButton />
         </ErrorBoundary>
       </body>
     </html>
