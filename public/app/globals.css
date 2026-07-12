@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0a2463;
+  --color-secondary: #67b2d8;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.parallax-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.split-section {
+  min-height: 70vh;
+}
+
+.sidebar-link.active {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.sidebar-link.active:hover {
+  color: #000;
+}
+
+@media (max-width: 768px) {
+  .split-section {
+    min-height: auto;
+  }
+}
