@@ -60,7 +60,7 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-white mb-4">Contact</h4>
             <ul className="space-y-2 text-sm">
-              <li>📧 contact@abita-office.com</li>
+              <li>📧 contact@abitaofficedesign.com</li>
               <li>📞 +212 708-768944</li>
             </ul>
           </div>

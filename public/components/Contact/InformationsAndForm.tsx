@@ -115,10 +115,10 @@ export default function InformationsAndForm({
                 <div>
                   <h3 className="font-semibold text-lg mb-1">E-mail</h3>
                   <a
-                    href="mailto:contact@abita-office.com"
+                    href="mailto:contact@abitaofficedesign.com"
                     className="text-gray-600 hover:text-primary transition-colors"
                   >
-                    contact@abita-office.com
+                    contact@abitaofficedesign.com
                   </a>
                 </div>
               </div>

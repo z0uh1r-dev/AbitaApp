@@ -38,7 +38,12 @@ export default function Header() {
             className="flex items-center hover:opacity-80 transition-opacity"
             onClick={() => setIsMenuOpen(false)}
           >
-            <div className="text-2xl font-bold text-primary">ABITA</div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/logo.svg"
+              alt="ABITA Office & Design"
+              className="h-16 w-auto"
+            />
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">

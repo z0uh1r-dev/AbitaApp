@@ -80,7 +80,7 @@ export default function Sidebar() {
           accompagne à chaque étape.
         </p>
         <div className="space-y-2 text-sm">
-          <p>📧 contact@abita-office.com</p>
+          <p>📧 contact@abitaofficedesign.com</p>
           <p>📞 +212 708-768944</p>
         </div>
       </div>

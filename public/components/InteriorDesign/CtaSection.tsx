@@ -117,10 +117,10 @@ export default function CtaSection() {
                 <div>
                   <div className="font-semibold mb-1">Écrivez-nous</div>
                   <a
-                    href="mailto:contact@abita-office.com"
+                    href="mailto:contact@abitaofficedesign.com"
                     className="text-primary hover:text-primary/80"
                   >
-                    contact@abita-office.com
+                    contact@abitaofficedesign.com
                   </a>
                 </div>
               </div>
