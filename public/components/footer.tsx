@@ -6,7 +6,12 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <div className="text-2xl font-bold text-white mb-4">ABITA</div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/logo-white.svg"
+              alt="ABITA Office & Design"
+              className="h-20 w-auto mb-4"
+            />
             <p className="text-sm">
               Des créations personnalisées pour les entreprises et les
               événements professionnels
