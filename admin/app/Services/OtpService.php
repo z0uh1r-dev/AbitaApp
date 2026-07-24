@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Enums\AuthLogEvent;
+use App\Exceptions\OtpDeliveryException;
 use App\Mail\OtpMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 /**
  * Handles Steps 2-4 of the authentication flow: generating, delivering and
@@ -36,7 +38,13 @@ class OtpService
             'expires_at' => now()->addMinutes(self::EXPIRY_MINUTES),
         ]);
 
-        Mail::to($user->email)->send(new OtpMail($plainCode, self::EXPIRY_MINUTES));
+        try {
+            Mail::to($user->email)->send(new OtpMail($plainCode, self::EXPIRY_MINUTES));
+        } catch (Throwable $exception) {
+            report($exception);
+
+            throw OtpDeliveryException::from($exception);
+        }
 
         $this->authLogService->record(AuthLogEvent::OtpGenerated, $user, $request);
     }

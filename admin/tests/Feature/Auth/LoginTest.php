@@ -51,3 +51,19 @@ test('login requires a well-formed email and a password', function () {
     $this->post('/login', ['email' => '', 'password' => ''])
         ->assertSessionHasErrors(['email', 'password']);
 });
+
+test('a mail delivery failure while sending the OTP fails clearly instead of crashing or hanging', function () {
+    $user = makeUser(['password' => validPassword()]);
+
+    Illuminate\Support\Facades\Mail::shouldReceive('to->send')
+        ->once()
+        ->andThrow(new Symfony\Component\Mailer\Exception\TransportException('Connection could not be established'));
+
+    $response = $this->post('/login', [
+        'email' => $user->email,
+        'password' => validPassword(),
+    ]);
+
+    $response->assertSessionHasErrors('email');
+    $this->assertGuest();
+});

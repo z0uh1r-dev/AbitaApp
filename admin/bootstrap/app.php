@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\InvalidUserStateTransitionException;
+use App\Exceptions\OtpDeliveryException;
 use App\Exceptions\ProtectedAccountException;
 use App\Http\Middleware\EnsurePendingOtp;
 use App\Http\Middleware\EnsureUserIsSuperAdmin;
@@ -43,5 +44,13 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             return back()->with('error', $e->getMessage());
+        });
+
+        $exceptions->render(function (OtpDeliveryException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $e->getMessage()], 503);
+            }
+
+            return back()->withErrors(['email' => $e->getMessage()])->onlyInput('email');
         });
     })->create();
