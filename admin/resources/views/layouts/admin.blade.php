@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
     <title>@yield('title', 'Dashboard') — Admin</title>
 
     {{-- Tailwind CDN (swap for compiled asset in production) --}}
@@ -41,22 +42,11 @@
 
         {{-- Logo --}}
         <div class="h-20 flex items-center justify-center border-b border-gray-800">
-            <img src="{{ asset('logo.png') }}" alt="AbitaDash Logo" class="h-16 w-auto">
+            <img src="{{ asset('logo.png') }}" alt="{{ config('app.name') }} Logo" class="h-16 w-auto">
         </div>
 
         {{-- Nav --}}
         <nav class="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
-
-            @php
-                $navItem = function(string $route, string $icon, string $label, string $matchPrefix = '') use (&$navItem) {
-                    $active = request()->routeIs($matchPrefix ?: $route);
-                    $base   = 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors';
-                    $cls    = $active
-                        ? "$base bg-brand text-gray-50"
-                        : "$base text-gray-400 hover:bg-gray-800 hover:text-gray-50";
-                    echo "<a href=\"" . route($route) . "\" class=\"{$cls}\">{$icon} {$label}</a>";
-                };
-            @endphp
 
             <div class="px-3 mb-2 text-[10px] font-semibold uppercase tracking-widest text-gray-300">Overview</div>
             <a href="{{ route('admin.dashboard') }}"
@@ -65,48 +55,71 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                 Dashboard
             </a>
-
-            <div class="px-3 mt-5 mb-2 text-[10px] font-semibold uppercase tracking-widest text-gray-300">Catalog</div>
-            <a href="{{ route('admin.categories.index') }}"
+            <a href="{{ route('admin.profile.show') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                      {{ request()->routeIs('admin.categories.*') ? 'bg-brand text-gray-50' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-50' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-                Categories
-                <span class="ml-auto bg-gray-800 text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ \App\Models\Category::count() }}</span>
-            </a>
-            <a href="{{ route('admin.products.index') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                      {{ request()->routeIs('admin.products.*') ? 'bg-brand text-gray-50' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-50' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                Products
-                <span class="ml-auto bg-gray-800 text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ \App\Models\Product::count() }}</span>
+                      {{ request()->routeIs('admin.profile.*') ? 'bg-brand text-gray-50' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-50' }}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                Profile
             </a>
 
-            <div class="px-3 mt-5 mb-2 text-[10px] font-semibold uppercase tracking-widest text-gray-300">Requests</div>
-            <a href="{{ route('admin.quotes.index') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                      {{ request()->routeIs('admin.quotes.*') ? 'bg-brand text-gray-50' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-50' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                Quotes
-                <span class="ml-auto bg-gray-800 text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ \App\Models\Quote::count() }}</span>
-            </a>
-            <a href="{{ route('admin.messages.index') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
-                      {{ request()->routeIs('admin.messages.*') ? 'bg-brand text-gray-50' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-50' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                Messages
-                <span class="ml-auto bg-gray-800 text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ \App\Models\ContactMessage::count() }}</span>
-            </a>
+            @if(auth()->user()->isSuperAdmin())
+                <div class="px-3 mt-5 mb-2 text-[10px] font-semibold uppercase tracking-widest text-gray-300">Catalog</div>
+                <a href="{{ route('admin.categories.index') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                          {{ request()->routeIs('admin.categories.*') ? 'bg-brand text-gray-50' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-50' }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                    Categories
+                    <span class="ml-auto bg-gray-800 text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ \App\Models\Category::count() }}</span>
+                </a>
+                <a href="{{ route('admin.products.index') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                          {{ request()->routeIs('admin.products.*') ? 'bg-brand text-gray-50' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-50' }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                    Products
+                    <span class="ml-auto bg-gray-800 text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ \App\Models\Product::count() }}</span>
+                </a>
+
+                <div class="px-3 mt-5 mb-2 text-[10px] font-semibold uppercase tracking-widest text-gray-300">Requests</div>
+                <a href="{{ route('admin.quotes.index') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                          {{ request()->routeIs('admin.quotes.*') ? 'bg-brand text-gray-50' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-50' }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    Quotes
+                    <span class="ml-auto bg-gray-800 text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ \App\Models\Quote::count() }}</span>
+                </a>
+                <a href="{{ route('admin.messages.index') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                          {{ request()->routeIs('admin.messages.*') ? 'bg-brand text-gray-50' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-50' }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    Messages
+                    <span class="ml-auto bg-gray-800 text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ \App\Models\ContactMessage::count() }}</span>
+                </a>
+
+                <div class="px-3 mt-5 mb-2 text-[10px] font-semibold uppercase tracking-widest text-gray-300">Administration</div>
+                <a href="{{ route('admin.users.index') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                          {{ request()->routeIs('admin.users.*') ? 'bg-brand text-gray-50' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-50' }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-4.13a4 4 0 10-4-4 4 4 0 004 4zm6 0a4 4 0 10-4-4"/></svg>
+                    Users
+                    <span class="ml-auto bg-gray-800 text-gray-400 text-xs px-2 py-0.5 rounded-full">{{ \App\Models\User::count() }}</span>
+                </a>
+                <a href="{{ route('admin.auth-logs.index') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                          {{ request()->routeIs('admin.auth-logs.*') ? 'bg-brand text-gray-50' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-50' }}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                    Auth Logs
+                </a>
+            @endif
         </nav>
 
         {{-- User --}}
         <div class="border-t border-gray-800 px-4 py-4">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full bg-brand/20 flex items-center justify-center text-brand font-bold text-sm">
-                    {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
+                    {{ strtoupper(substr(auth()->user()->first_name ?? 'A', 0, 1)) }}
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-200 truncate">{{ auth()->user()->name ?? 'Admin' }}</p>
+                    <p class="text-sm font-medium text-gray-200 truncate">{{ auth()->user()->full_name ?? '' }}</p>
                     <p class="text-xs text-gray-400 truncate">{{ auth()->user()->email ?? '' }}</p>
                 </div>
                 <form method="POST" action="{{ route('logout') }}">

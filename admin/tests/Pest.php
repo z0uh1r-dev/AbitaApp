@@ -13,6 +13,12 @@
 
 pest()->extend(Tests\TestCase::class)
  // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->beforeEach(function () {
+        // The `array` cache driver persists for the whole test process, so
+        // without this, rate limiter state (and anything else cached)
+        // would leak between test methods and cause flaky failures.
+        \Illuminate\Support\Facades\Cache::flush();
+    })
     ->in('Feature');
 
 /*
@@ -44,4 +50,51 @@ expect()->extend('toBeOne', function () {
 function something()
 {
     // ..
+}
+
+/**
+ * A password meeting the app's policy: 12+ chars, upper/lower/number/symbol.
+ */
+function validPassword(): string
+{
+    return 'Str0ng!Passw0rd123';
+}
+
+function makeUser(array $overrides = []): \App\Models\User
+{
+    return \App\Models\User::create(array_merge([
+        'first_name' => 'Test',
+        'last_name' => 'User',
+        'email' => 'user-'.uniqid().'@abitaofficedesign.com',
+        'password' => validPassword(),
+        'role' => 'user',
+        'status' => 'active',
+        'must_change_password' => false,
+    ], $overrides));
+}
+
+function makeSuperAdmin(array $overrides = []): \App\Models\User
+{
+    return makeUser(array_merge(['role' => 'super_admin'], $overrides));
+}
+
+/**
+ * Completes Step 1 (email + password) and captures the plaintext OTP that
+ * was emailed, so tests can drive Step 4 without knowing the hashed value.
+ */
+function loginToPendingOtp(string $email, string $password): string
+{
+    \Illuminate\Support\Facades\Mail::fake();
+
+    test()->post('/login', ['email' => $email, 'password' => $password])
+        ->assertRedirect(route('otp.show'));
+
+    $code = null;
+    \Illuminate\Support\Facades\Mail::assertSent(\App\Mail\OtpMail::class, function ($mail) use (&$code) {
+        $code = $mail->code;
+
+        return true;
+    });
+
+    return $code;
 }

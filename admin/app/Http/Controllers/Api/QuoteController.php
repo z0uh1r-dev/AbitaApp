@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\UserRole;
+use App\Enums\UserStatus;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\StoreQuoteRequest;
 use App\Mail\NewQuoteForAdmin;
 use App\Mail\QuoteReceivedConfirmation;
 use App\Models\Quote;
 use App\Models\User;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\StoreQuoteRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
@@ -28,7 +30,8 @@ class QuoteController extends Controller
         }
 
         $adminEmails = User::query()
-            ->where('is_admin', true)
+            ->where('role', UserRole::SuperAdmin)
+            ->where('status', UserStatus::Active)
             ->pluck('email')
             ->filter()
             ->values()

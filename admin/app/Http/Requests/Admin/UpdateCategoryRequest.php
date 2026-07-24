@@ -10,7 +10,7 @@ class UpdateCategoryRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->is_admin;
+        return $this->user()->isSuperAdmin();
     }
 
     public function rules(): array
@@ -18,11 +18,11 @@ class UpdateCategoryRequest extends FormRequest
         $id = $this->route('category')->id;
 
         return [
-            'name'        => ['required', 'string', 'max:255'],
-            'slug'        => ['nullable', 'string', 'max:255', "unique:categories,slug,{$id}"],
+            'name' => ['required', 'string', 'max:255'],
+            'slug' => ['nullable', 'string', 'max:255', "unique:categories,slug,{$id}"],
             'description' => ['nullable', 'string'],
             // may replace existing image with new upload
-            'image'       => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:2048'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:2048'],
         ];
     }
 

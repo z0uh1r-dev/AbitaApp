@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Login — Admin</title>
+    <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+    <title>Sign in — {{ config('app.name') }}</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -37,6 +38,7 @@
         <div class="mx-auto w-full max-w-sm lg:w-96">
             <div>
                 <h2 class="mt-8 text-3xl font-bold tracking-tight text-brand">Sign in to your account</h2>
+                <p class="mt-2 text-sm text-gray-400">Company account required. A verification code will be sent to your email.</p>
             </div>
 
             <div class="mt-8">
@@ -54,8 +56,9 @@
                                 id="email"
                                 value="{{ old('email') }}"
                                 required
+                                autofocus
                                 class="block w-full appearance-none rounded-lg border border-gray-700 bg-gray-900 px-4 py-2 text-gray-100 placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand sm:text-sm"
-                                placeholder="you@example.com"
+                                placeholder="you@abitaofficedesign.com"
                             >
                             @error('email')
                                 <p class="mt-2 text-sm text-red-400">{{ $message }}</p>
@@ -82,25 +85,11 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <input
-                                type="checkbox"
-                                name="remember"
-                                id="remember"
-                                class="h-4 w-4 rounded border-gray-700 bg-gray-900 text-brand focus:ring-brand"
-                            >
-                            <label for="remember" class="ml-2 block text-sm text-gray-400">
-                                Remember me
-                            </label>
-                        </div>
-                    </div>
-
                     <button
                         type="submit"
                         class="flex w-full justify-center rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-gray-50 hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 focus:ring-offset-gray-950 transition-colors"
                     >
-                        Sign in
+                        Continue
                     </button>
                 </form>
             </div>
@@ -110,8 +99,8 @@
     <div class="relative hidden w-0 flex-1 lg:block">
         <div class="absolute inset-0 h-full w-full bg-gradient-to-br from-brand/10 via-gray-900 to-gray-950"></div>
         <div class="relative flex h-full flex-col justify-center px-12 py-12">
-            <h1 class="text-4xl font-bold text-brand">AbitaDash Admin</h1>
-            <p class="mt-4 text-lg text-gray-400">Manage your products, categories, and quotations</p>
+            <h1 class="text-4xl font-bold text-brand">{{ config('app.name') }} Admin</h1>
+            <p class="mt-4 text-lg text-gray-400">Private dashboard for Abita Office Design employees</p>
         </div>
     </div>
 </div>

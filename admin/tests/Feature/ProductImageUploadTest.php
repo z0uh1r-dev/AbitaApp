@@ -15,23 +15,25 @@ test('admin can create product with main and gallery images', function () {
 
     // create admin user and category manually
     $admin = User::create([
-        'name' => 'Admin',
-        'email' => 'admin@example.com',
-        'password' => bcrypt('password'),
-        'is_admin' => true,
+        'first_name' => 'Admin',
+        'last_name' => 'User',
+        'email' => 'admin@abitaofficedesign.com',
+        'password' => 'password',
+        'role' => 'super_admin',
+        'status' => 'active',
     ]);
     $category = Category::create(['name' => 'Test Cat', 'slug' => 'test-cat']);
 
     $response = $this->actingAs($admin)
         ->post(route('admin.products.store'), [
-            'name'        => 'My Product',
-            'slug'        => 'my-product',
+            'name' => 'My Product',
+            'slug' => 'my-product',
             'description' => 'A description',
-            'categoryId'  => $category->id,
-            'image'       => UploadedFile::fake()->image('main.jpg'),
+            'categoryId' => $category->id,
+            'image' => UploadedFile::fake()->image('main.jpg'),
             'specifications' => [],
             'customizations' => [],
-            'images'      => [
+            'images' => [
                 ['file' => UploadedFile::fake()->image('one.jpg'), 'alt' => 'One', 'order' => 1],
                 ['file' => UploadedFile::fake()->image('two.jpg'), 'alt' => 'Two', 'order' => 2],
             ],

@@ -10,7 +10,7 @@ class UpdateProductRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->is_admin;
+        return $this->user()->isSuperAdmin();
     }
 
     public function rules(): array
@@ -18,26 +18,26 @@ class UpdateProductRequest extends FormRequest
         $id = $this->route('product')->id;
 
         return [
-            'name'        => ['required', 'string', 'max:255'],
-            'slug'        => ['nullable', 'string', 'max:255', "unique:products,slug,{$id}"],
+            'name' => ['required', 'string', 'max:255'],
+            'slug' => ['nullable', 'string', 'max:255', "unique:products,slug,{$id}"],
             'description' => ['required', 'string'],
             // main image may be replaced with new upload, otherwise keep existing
-            'image'       => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:2048'],
-            'categoryId'  => ['required', 'integer', 'exists:categories,id'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:2048'],
+            'categoryId' => ['required', 'integer', 'exists:categories,id'],
 
-            'specifications'          => ['nullable', 'array'],
-            'specifications.*.label'  => ['required_with:specifications.*.value', 'string', 'max:255'],
-            'specifications.*.value'  => ['required_with:specifications.*.label', 'string', 'max:500'],
+            'specifications' => ['nullable', 'array'],
+            'specifications.*.label' => ['required_with:specifications.*.value', 'string', 'max:255'],
+            'specifications.*.value' => ['required_with:specifications.*.label', 'string', 'max:500'],
 
-            'customizations'   => ['nullable', 'array'],
+            'customizations' => ['nullable', 'array'],
             'customizations.*' => ['required', 'string', 'max:255'],
 
-            'images'             => ['nullable', 'array'],
+            'images' => ['nullable', 'array'],
             // either a new file is provided or an existing path is kept
-            'images.*.file'      => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:2048'],
-            'images.*.existing'  => ['nullable', 'string', 'max:500'],
-            'images.*.alt'       => ['nullable', 'string', 'max:255'],
-            'images.*.order'     => ['nullable', 'integer', 'min:1'],
+            'images.*.file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:2048'],
+            'images.*.existing' => ['nullable', 'string', 'max:500'],
+            'images.*.alt' => ['nullable', 'string', 'max:255'],
+            'images.*.order' => ['nullable', 'integer', 'min:1'],
         ];
     }
 
@@ -45,10 +45,10 @@ class UpdateProductRequest extends FormRequest
     {
         $validator->after(function ($v) {
             $images = $this->input('images', []);
-            
+
             // collect only valid rows (those with files or existing paths)
-            $validImages = array_filter($images, fn($img) => ! empty($img['file']) || ! empty($img['existing']));
-            
+            $validImages = array_filter($images, fn ($img) => ! empty($img['file']) || ! empty($img['existing']));
+
             $orders = array_column($validImages, 'order');
             if (count($orders) !== count(array_unique($orders))) {
                 $v->errors()->add('images', 'Each image must have a unique order value.');

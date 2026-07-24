@@ -12,10 +12,12 @@ test('client can create a quote and notifications are sent', function () {
     Mail::fake();
 
     User::query()->create([
-        'name' => 'Admin User',
-        'email' => 'admin@example.com',
+        'first_name' => 'Admin',
+        'last_name' => 'User',
+        'email' => 'admin@abitaofficedesign.com',
         'password' => 'password',
-        'is_admin' => true,
+        'role' => 'super_admin',
+        'status' => 'active',
     ]);
 
     $payload = [
@@ -45,7 +47,7 @@ test('client can create a quote and notifications are sent', function () {
     ]);
 
     Mail::assertSent(NewQuoteForAdmin::class, function (NewQuoteForAdmin $mail) {
-        return $mail->hasTo('admin@example.com')
+        return $mail->hasTo('admin@abitaofficedesign.com')
             && $mail->quote->email === 'john@example.com';
     });
 

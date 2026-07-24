@@ -17,6 +17,7 @@
     @endforeach
 </div>
 
+@if(auth()->user()->isSuperAdmin())
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
     {{-- ── Latest Products ─────────────────────────────────────────────── --}}
@@ -123,6 +124,7 @@
         </table>
     </div>
 </div>
+@endif
 @endif
 
 @endsection

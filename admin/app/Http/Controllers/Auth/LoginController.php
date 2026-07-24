@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Services\LoginService;
+use App\Services\OtpService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class LoginController extends Controller
@@ -14,29 +16,26 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    public function store(Request $request): RedirectResponse
+    /**
+     * Step 1 of the authentication flow. On success the user is NOT logged
+     * in yet — LoginService starts a pending-OTP session state and this
+     * dispatches the OTP (Steps 2-3), leaving verification (Step 4) to
+     * OtpController.
+     */
+    public function store(LoginRequest $request, LoginService $loginService, OtpService $otpService): RedirectResponse
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $credentials = $request->validated();
 
-        if (auth()->attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
-            return redirect()->intended(route('admin.dashboard'));
+        $user = $loginService->attempt($credentials['email'], $credentials['password'], $request);
+
+        if ($user === null) {
+            return back()
+                ->withErrors(['email' => LoginService::GENERIC_ERROR])
+                ->onlyInput('email');
         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
-    }
+        $otpService->generateAndSend($user, $request);
 
-    public function destroy(Request $request): RedirectResponse
-    {
-        auth()->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect('/');
+        return redirect()->route('otp.show');
     }
 }

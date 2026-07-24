@@ -10,17 +10,17 @@ class StoreCategoryRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->is_admin;
+        return $this->user()->isSuperAdmin();
     }
 
     public function rules(): array
     {
         return [
-            'name'        => ['required', 'string', 'max:255'],
-            'slug'        => ['nullable', 'string', 'max:255', 'unique:categories,slug'],
+            'name' => ['required', 'string', 'max:255'],
+            'slug' => ['nullable', 'string', 'max:255', 'unique:categories,slug'],
             'description' => ['nullable', 'string'],
             // optional image upload instead of manual URL
-            'image'       => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:2048'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:2048'],
         ];
     }
 
